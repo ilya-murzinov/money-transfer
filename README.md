@@ -1,6 +1,6 @@
 # money-transfer
 
-Scala implementation of REST API for money transfer between accounts using [Finch](finch), [Circe](circe), [Doobie](doobie), and [Scalatest](scalatest) with [Featherbed](featherbed) for testing.
+Scala implementation of REST API for money transfer between accounts using [`Finch`][finch], [`Circe`][circe], [`Doobie`][doobie], and [`Scalatest`][scalatest] with [`Featherbed`][featherbed] for testing.
 
 [finch]: https://github.com/finagle/finch
 [circe]: https://github.com/circe/circe
