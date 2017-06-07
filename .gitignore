@@ -1,5 +1,6 @@
 target/
 sbt/
+db/
 .idea*
 
 *.iml

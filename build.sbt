@@ -1,8 +1,10 @@
-lazy val finchVersion = "0.14.0"
+lazy val finchVersion = "0.14.1"
 lazy val catsVersion = "0.9.0"
 lazy val circeVersion = "0.8.0"
 lazy val doobieVersion = "0.4.1"
 lazy val fs2Version = "0.9.6"
+lazy val featherbedVersion = "0.3.1"
+lazy val scalatestVersion = "3.0.1"
 
 enablePlugins(JavaAppPackaging)
 
@@ -18,7 +20,10 @@ val allSettings = Seq(
     "io.circe" %% "circe-generic" % circeVersion,
     "org.tpolecat" %% "doobie-core-cats" % doobieVersion,
     "org.tpolecat" %% "doobie-h2-cats" % doobieVersion,
-    "org.tpolecat" %% "doobie-contrib-h2" % "0.3.0a"
+    "org.tpolecat" %% "doobie-contrib-h2" % "0.3.0a",
+    "org.scalatest" %% "scalatest" % scalatestVersion % "test",
+    "io.github.finagle" %% "featherbed-core" % featherbedVersion % "test",
+    "io.github.finagle" %% "featherbed-circe" % featherbedVersion % "test"
   ),
   scalacOptions ++= Seq(
     "-encoding",
