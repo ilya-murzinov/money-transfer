@@ -1,0 +1,7 @@
+target/
+sbt/
+.idea*
+
+*.iml
+*.class
+*.log
