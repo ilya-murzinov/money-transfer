@@ -14,14 +14,39 @@ import shapeless.Coproduct
 class MoneyTransferSpec extends FlatSpec with Matchers {
   val port = 8765
   val defaultAmount: Double = 100
+  val accountNotFoundError = "\\{\"message\":\"Account with id .* not found\"}"
 
   behavior of "Money transfer API"
+
+  it should "not get non-existent account" in {
+    val server = startServer
+
+    try {
+      val error = intercept[Exception] {
+        getAccount(UUID.randomUUID)
+      }
+      error.getMessage should fullyMatch regex accountNotFoundError
+    }
+    finally server.close()
+  }
 
   it should "create accounts and transfer correct amount of money" in {
     val server = startServer
 
     try {
       createAccountsAndTransfer(10)
+    }
+    finally server.close()
+  }
+
+  it should "not transfer money from non-existent account" in {
+    val server = startServer
+
+    try {
+      val error = intercept[Exception] {
+        transfer(UUID.randomUUID, UUID.randomUUID, 10)
+      }
+      error.getMessage should fullyMatch regex accountNotFoundError
     }
     finally server.close()
   }
@@ -53,7 +78,7 @@ class MoneyTransferSpec extends FlatSpec with Matchers {
 
     val john = createAccount("John", "Smith")
 
-    transfer(tom, john, amount)
+    transfer(tom.id, john.id, amount)
 
     val newTom = getAccount(tom.id)
     newTom.amount shouldBe tom.amount - amount
@@ -88,12 +113,12 @@ class MoneyTransferSpec extends FlatSpec with Matchers {
     }
   }
 
-  def transfer(from: Account, to: Account, amount: Double): Transaction = {
+  def transfer(from: UUID, to: UUID, amount: Double): Transaction = {
     Await.result {
       client
         .post("transfer")
         .withContent(
-          Transaction(from.id, to.id, amount),
+          Transaction(from, to, amount),
           "application/json"
         )
         .accept[Coproduct.`"application/json"`.T]
