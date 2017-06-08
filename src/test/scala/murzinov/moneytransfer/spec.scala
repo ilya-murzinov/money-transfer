@@ -33,13 +33,14 @@ class MoneyTransferSpec extends FlatSpec with Matchers {
       val error = intercept[Exception] {
         createAccountsAndTransfer(200)
       }
-      error.getMessage shouldBe "{\"message\":\"Could not transfer money\"}"
+      error.getMessage should fullyMatch regex
+        "\\{\"message\":\"Account with id .* doesn't have enough money to transfer to account with id .*\"}"
     }
     finally server.close()
   }
 
   def startServer = {
-    val xa = DB.create.unsafeRun()
+    val xa = DB.createInMemory.unsafeRun()
     val service = new MoneyTransferService(xa)
     val api = new MoneyTransferApi(service)
     Http.server.serve(s":$port", api.service)

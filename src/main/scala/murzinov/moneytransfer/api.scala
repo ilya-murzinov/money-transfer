@@ -22,12 +22,8 @@ class MoneyTransferApi(mts: MoneyTransferService) {
   val transferMoneyEndpoint: Endpoint[Transaction] =
     post("api" :: "transfer" :: jsonBody[Transaction]) { (tr: Transaction) =>
       mts.transferMoney(tr.fromId, tr.toId, tr.amount).toFuture.map {
-        case Some(t) => Ok(t)
-        case None => NotFound(
-          TransferError(
-            "Could not transfer money" //TODO: meaningful error
-          )
-        )
+        case Right(t) => Ok(t)
+        case Left(e) => NotFound(e)
       }
     }
 
