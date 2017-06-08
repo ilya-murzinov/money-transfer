@@ -10,7 +10,7 @@ API root URL: [http://localhost:8080/api/](http://localhost:8080/api/)
 
 The following methods implemented:
 
-1. ```PUT /account```
+## ```PUT /account```
 
   Creates new account, returns account in response.
 
@@ -33,7 +33,7 @@ The following methods implemented:
   }
   ```
 
-1. ```GET /account/$id```
+## ```GET /account/$id```
 
   Example response:
   ```
@@ -54,7 +54,7 @@ The following methods implemented:
     }
     ```
 
-1. ```POST /transfer```
+## ```POST /transfer```
   Transfers money from one account to another. Returns successful transaction.
 
   Example request:
