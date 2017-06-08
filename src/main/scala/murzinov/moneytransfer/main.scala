@@ -5,7 +5,6 @@ import com.twitter.util.Await
 
 object Main {
   def main(args: Array[String]): Unit = {
-    //TODO: can it be wrapped in for-comprehension
     val xa = DB.create.unsafeRun()
     val service = new MoneyTransferService(xa)
     val api = new MoneyTransferApi(service)

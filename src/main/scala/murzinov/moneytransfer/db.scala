@@ -18,13 +18,13 @@ object DB {
       xa <- H2Transactor[Task](connection, user, password)
       _  <- xa.setMaxConnections(10)
       init = for {
-        _ <- DB.createAccountsTableQuery
-        _ <- DB.createTransactionsTableQuery
+        _ <- createAccountsTableQuery
+        _ <- createTransactionsTableQuery
       } yield ()
       _ <- init.transact(xa)
     } yield xa
 
-  lazy val createAccountsTableQuery: ConnectionIO[Int] =
+  private[this] lazy val createAccountsTableQuery: ConnectionIO[Int] =
     sql"""
       create table if not exists accounts(
         id uuid primary key,
@@ -34,7 +34,7 @@ object DB {
       );
     """.update.run
 
-  lazy val createTransactionsTableQuery: ConnectionIO[Int] =
+  private[this] lazy val createTransactionsTableQuery: ConnectionIO[Int] =
     sql"""
       create table if not exists transactions(
         id uuid primary key,

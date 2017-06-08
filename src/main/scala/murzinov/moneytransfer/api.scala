@@ -6,12 +6,12 @@ import io.finch.circe._
 import java.util.UUID
 
 class MoneyTransferApi(mts: MoneyTransferService) {
-  val createAcountEndpoint: Endpoint[Account] =
+  private[this] val createAcountEndpoint: Endpoint[Account] =
     put("api" :: "account" :: jsonBody[UUID => Account]) { (f: UUID => Account) =>
       mts.saveAccount(f(UUID.randomUUID)).toFuture.map(Ok(_))
     }
 
-  val getAccountEndpoint: Endpoint[Account] =
+  private[this] val getAccountEndpoint: Endpoint[Account] =
     get("api" :: "account" :: uuid) { (id: UUID) =>
       mts.getAccount(id).toFuture.map {
         case Some(a) => Ok(a)
@@ -19,15 +19,18 @@ class MoneyTransferApi(mts: MoneyTransferService) {
       }
     }
 
-  val transferMoneyEndpoint: Endpoint[Transaction] =
+  private[this] val transferMoneyEndpoint: Endpoint[Transaction] =
     post("api" :: "transfer" :: jsonBody[Transaction]) { (tr: Transaction) =>
       mts.transferMoney(tr.fromId, tr.toId, tr.amount).toFuture.map {
         case Right(t) => Ok(t)
-        case Left(e) => NotFound(e)
+        case Left(e) => e match {
+          case a@AccountNotFound(m) => NotFound(a)
+          case t@TransferError(m) => BadRequest(t)
+        }
       }
     }
 
-  val endpoints =
+  private[this] val endpoints =
     getAccountEndpoint :+:
     createAcountEndpoint :+:
     transferMoneyEndpoint
