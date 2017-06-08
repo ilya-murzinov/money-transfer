@@ -7,9 +7,4 @@ case class AccountNotFound(id: UUID) extends Exception(s"Account with id '$id' n
 
 case class Transaction(fromId: UUID, toId: UUID, amount: Double)
 
-case class TransferError(
-  fromId: UUID,
-  toId: UUID,
-  amount: Double,
-  description: String
-) extends Exception(description)
+case class TransferError(description: String) extends Exception(description)
