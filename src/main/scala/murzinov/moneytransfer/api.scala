@@ -21,7 +21,7 @@ class MoneyTransferApi(mts: MoneyTransferService) {
 
   private[this] val transferMoneyEndpoint: Endpoint[Transaction] =
     post("api" :: "transfer" :: jsonBody[Transaction]) { (tr: Transaction) =>
-      mts.transferMoney(tr.fromId, tr.toId, tr.amount).toFuture.map {
+      mts.transferMoney(tr).toFuture.map {
         case Right(t) => Ok(t)
         case Left(e) => e match {
           case a@AccountNotFound(m) => NotFound(a)

@@ -83,6 +83,13 @@ The following methods implemented:
       "message": "Account with id 'ed8d39bf-765d-4d56-af5f-5ffa5f9b3264' not found"
     }
     ```
+  * Can't transfer negative amount of money:
+    ```
+    Status: 400
+    {
+      "message": "Can't transfer non-positive amount of money"
+    }
+    ```
   * Not enough  money to transfers:
     ```
     Status: 400

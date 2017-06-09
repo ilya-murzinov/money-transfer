@@ -55,11 +55,16 @@ class MoneyTransferSpec extends FlatSpec with Matchers {
     val server = startServer
 
     try {
-      val error = intercept[Exception] {
+      val notEnoughMoney = intercept[Exception] {
         createAccountsAndTransfer(200)
       }
-      error.getMessage should fullyMatch regex
+      notEnoughMoney.getMessage should fullyMatch regex
         "\\{\"message\":\"Account with id .* doesn't have enough money to transfer to account with id .*\"}"
+
+      val negativeAmount = intercept[Exception] {
+        createAccountsAndTransfer(-100)
+      }
+      negativeAmount.getMessage shouldBe "{\"message\":\"Can't transfer non-positive amount of money\"}"
     }
     finally server.close()
   }

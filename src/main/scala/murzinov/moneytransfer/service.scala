@@ -14,18 +14,24 @@ class MoneyTransferService(xa: Transactor[Task]) {
   def saveAccount(a: Account): Task[Account] =
     DB.saveAccountQuery(a).transact(xa)
 
-  def transferMoney(fromId: UUID, toId: UUID, amount: Double): Task[Either[ApiException, Transaction]] = {
+  def transferMoney(tr: Transaction): Task[Either[ApiException, Transaction]] = {
     val action = for {
-      from <- OptionT(DB.getAccountQuery(fromId)).toRight(new AccountNotFound(fromId))
-      to <- OptionT(DB.getAccountQuery(toId)).toRight(new AccountNotFound(toId))
-      _ <- if (from.amount > amount) EitherT.right(().pure[ConnectionIO])
+      _ <- if (tr.amount > 0) dummy
            else EitherT.left[ConnectionIO, TransferError, Account](
-             new TransferError(s"Account with id $fromId doesn't have enough money to transfer to account with id $toId").pure[ConnectionIO]
+             new TransferError("Can't transfer non-positive amount of money").pure[ConnectionIO]
            )
-      _ <- EitherT.liftT[ConnectionIO, ApiException, Account](DB.saveAccountQuery(from.copy(amount = from.amount - amount)))
-      _ <- EitherT.liftT[ConnectionIO, ApiException, Account](DB.saveAccountQuery(to.copy(amount = to.amount + amount)))
-      tr <- EitherT.liftT[ConnectionIO, ApiException, Transaction](DB.saveTransactionQuery(Transaction(fromId, toId, amount)))
-    } yield tr
+      from <- OptionT(DB.getAccountQuery(tr.fromId)).toRight(new AccountNotFound(tr.fromId))
+      to <- OptionT(DB.getAccountQuery(tr.toId)).toRight(new AccountNotFound(tr.toId))
+      _ <- if (from.amount > tr.amount) dummy
+           else EitherT.left[ConnectionIO, TransferError, Account](
+             new TransferError(s"Account with id ${tr.fromId} doesn't have enough money to transfer to account with id ${tr.toId}").pure[ConnectionIO]
+           )
+      _ <- EitherT.liftT[ConnectionIO, ApiException, Account](DB.saveAccountQuery(from.copy(amount = from.amount - tr.amount)))
+      _ <- EitherT.liftT[ConnectionIO, ApiException, Account](DB.saveAccountQuery(to.copy(amount = to.amount + tr.amount)))
+      out <- EitherT.liftT[ConnectionIO, ApiException, Transaction](DB.saveTransactionQuery(Transaction(tr.fromId, tr.toId, tr.amount)))
+    } yield out
     action.value.transact(xa)
   }
+
+  private[this] val dummy = EitherT.right(().pure[ConnectionIO])
 }
