@@ -1,6 +1,8 @@
 # money-transfer
 
-Purely functional Scala implementation of REST API for money transfer between accounts using [`Finch`][finch], [`Circe`][circe], [`Doobie`][doobie], and [`Scalatest`][scalatest] with [`Featherbed`][featherbed] for testing.
+Build status: [![CircleCI](https://circleci.com/gh/ilya-murzinov/money-transfer/tree/master.png?style=shield)](https://circleci.com/gh/ilya-murzinov/money-transfer)
+
+Purely functional Scala implementation of REST API for money transfer between accounts using [`Finch`][finch], [`Circe`][circe], [`Doobie`][doobie] and [`Scalatest`][scalatest] with [`Featherbed`][featherbed] for testing.
 
 To run simply execute ```sbt run```.
 
