@@ -56,7 +56,7 @@ The following methods implemented:
     }
     ```
 
-## ```POST /transfer```
+## ```POST /transaction```
   Transfers money from one account to another. Returns successful transaction.
 
   Example request:

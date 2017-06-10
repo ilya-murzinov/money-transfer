@@ -121,7 +121,7 @@ class MoneyTransferSpec extends FlatSpec with Matchers {
   def transfer(from: UUID, to: UUID, amount: Double): Transaction = {
     Await.result {
       client
-        .post("transfer")
+        .post("transaction")
         .withContent(
           Transaction(from, to, amount),
           "application/json"

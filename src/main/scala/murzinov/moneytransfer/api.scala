@@ -20,7 +20,7 @@ class MoneyTransferApi(mts: MoneyTransferService) {
     }
 
   private[this] val transferMoneyEndpoint: Endpoint[Transaction] =
-    post("api" :: "transfer" :: jsonBody[Transaction]) { (tr: Transaction) =>
+    post("api" :: "transaction" :: jsonBody[Transaction]) { (tr: Transaction) =>
       mts.transferMoney(tr).toFuture.map {
         case Right(t) => Ok(t)
         case Left(e) => e match {
