@@ -1,0 +1,20 @@
+general:
+  branches:
+    only:
+      - master
+
+dependencies:
+  cache_directories:
+    - "~/.ivy2"
+    - "~/.sbt"
+  pre:
+    - echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+    - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+    - sudo apt-get update
+     -sudo apt-get install sbt
+
+test:
+  override:
+    - sbt clean test stage
+    - cd target/universal/stage && tar zcvf money-transfer.tar.gz ./
+    - cp money-transfer.tar.gz $CIRCLE_ARTIFACTS
