@@ -18,5 +18,3 @@ dependencies:
 test:
   override:
     - sbt clean test stage
-    - cd target/universal && tar zcvf money-transfer.tar.gz ./stage
-    - cp money-transfer.tar.gz $CIRCLE_ARTIFACTS
