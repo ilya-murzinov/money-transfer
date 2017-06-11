@@ -12,7 +12,7 @@ class MoneyTransferApi(mts: MoneyTransferService) {
     }
 
   private[this] val getAccountEndpoint: Endpoint[Account] =
-    get("api" :: "account" :: uuid) { (id: UUID) =>
+    get("api" :: "account" :: path[UUID]) { (id: UUID) =>
       mts.getAccount(id).toFuture.map {
         case Some(a) => Ok(a)
         case None => NotFound(AccountNotFound(id))

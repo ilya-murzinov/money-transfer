@@ -2,6 +2,7 @@ package murzinov
 
 import com.twitter.util.{ Future, Promise }
 import fs2.Task
+import io.circe.{Encoder, Json}
 
 package object moneytransfer {
   implicit class TaskOps[A](task: Task[A]) {
@@ -16,4 +17,8 @@ package object moneytransfer {
       promise
     }
   }
+
+  implicit val encodeExceptionCirce: Encoder[Exception] = Encoder.instance(e =>
+    Json.obj("message" -> Option(e.getMessage).fold(Json.Null)(Json.fromString))
+  )
 }
